@@ -3,8 +3,9 @@
  * Josh de Leeuw
  *
  * documentation: docs.jspsych.org
- * 
+ *
  * Modified by Ian Eisenberg to record more trial parameters
+ * Modified by Roy Gutglick to be case-insensitive
  **/
 
 
@@ -73,6 +74,9 @@ jsPsych.plugins["poldrack-categorize"] = (function() {
 
     // create response function
     var after_response = function(info) {
+      // make it case-insensitive:
+        info.key = String.fromCharCode(info.key).toLowerCase().charCodeAt(0)
+        trial.key_answer = trial.key_answer.toLowerCase().charCodeAt(0)
 
       // after a valid response, the stimulus will have the CSS class 'responded'
       // which can be used to provide visual feedback that a response was recorded
