@@ -1,3 +1,25 @@
+/* ************************************ */
+/* Define experimental variables */
+/* ************************************ */
+// generic task variables
+var run_attention_checks = false
+var attention_check_thresh = 0.45
+var sumInstructTime = 0 //ms
+var instructTimeThresh = 0 ///in seconds
+
+// number of trails
+practice_len = 1 // was 12
+exp_len = 5 // was 100
+
+// stimuli
+left_key = "S"
+right_key = "L"
+congruent_right = ">>>>>"
+congruent_left = "<<<<<"
+incongruent_right = "<<><<"
+incongruent_left = ">><>>"
+
+
 /* *************************/
 /* Define helper functions */
 
@@ -46,14 +68,6 @@ var changeData = function () {
     }
 }
 
-/* ************************************ */
-/* Define experimental variables */
-/* ************************************ */
-// generic task variables
-var run_attention_checks = false
-var attention_check_thresh = 0.45
-var sumInstructTime = 0 //ms
-var instructTimeThresh = 0 ///in seconds
 
 // task specific variables
 var correct_responses = jsPsych.randomization.repeat([
@@ -61,37 +75,35 @@ var correct_responses = jsPsych.randomization.repeat([
     ["right arrow", 39]
 ], 1)
 var test_stimuli = [{
-    image: '<div class = centerbox><div class = flanker-text>ffhff</div></div>',
+    image: `<div class = centerbox><div class = flanker-text>${incongruent_right}</div></div>`,
     data: {
-        correct_response: 72,
+        correct_response: right_key,
         condition: 'incompatible',
         trial_id: 'stim'
     }
 }, {
-    image: '<div class = centerbox><div class = flanker-text>hhfhh</div></div>',
+    image: `<div class = centerbox><div class = flanker-text>${incongruent_left}</div>`,
     data: {
-        correct_response: 70,
+        correct_response: left_key,
         condition: 'incompatible',
         trial_id: 'stim'
     }
 }, {
-    image: '<div class = centerbox><div class = flanker-text>hhhhh</div></div>',
+    image: `<div class = centerbox><div class = flanker-text>${congruent_right}</div></div>`,
     data: {
-        correct_response: 72,
+        correct_response: right_key,
         condition: 'compatible',
         trial_id: 'stim'
     }
 }, {
-    image: '<div class = centerbox><div class = flanker-text>fffff</div></div>',
+    image: `<div class = centerbox><div class = flanker-text>${congruent_left}</div></div>`,
     data: {
-        correct_response: 70,
+        correct_response: left_key,
         condition: 'compatible',
         trial_id: 'stim'
     }
 }];
 
-practice_len = 12 //5
-exp_len = 100 //5
 var practice_trials = jsPsych.randomization.repeat(test_stimuli, practice_len / 4, true);
 var test_trials = jsPsych.randomization.repeat(test_stimuli, exp_len / 4, true);
 
@@ -157,7 +169,11 @@ var feedback_instruct_block = {
 var instructions_block = {
     type: 'poldrack-instructions',
     pages: [
-        "<div class = centerbox><p class = block-text>In this experiment you will see five letters on the string composed of f's and h's. For instance, you might see 'fffff' or 'hhfhh'. Your task is to respond by pressing the key corresponding to the <strong>middle</strong> letter. So if you see 'ffhff' you would press the 'h' key.</p><p class = block-text>After each respond you will get feedback about whether you were correct or not. We will start with a short practice set.</p></div>"
+        `<div class = centerbox><p class = block-text>In this experiment you will see five character strings composed of
+         '<' and '>'. For instance, you might see '${congruent_left}' or '${incongruent_left}'. Your task is to respond 
+         to the <strong>middle</strong> character by pressing the '${left_key}' key if it was '<', and the
+         '${right_key}' key if it was '>'. So if you see '${incongruent_right}' you would press the '${right_key}' key.</p>
+         <p class = block-text>After each response you will get feedback about whether you were correct or not. We will start with a short practice set.</p></div>`
     ],
     allow_keys: false,
     data: {
@@ -239,7 +255,7 @@ for (i = 0; i < practice_len; i++) {
         correct_text: '<div class = centerbox><div style="color:green"; class = center-text>Correct!</div></div>',
         incorrect_text: '<div class = centerbox><div style="color:red"; class = center-text>Incorrect</div></div>',
         timeout_message: '<div class = centerbox><div class = flanker-text>Respond faster</div></div>',
-        choices: [70, 72],
+        choices: [left_key, right_key],
         data: practice_trials.data[i],
         timing_feedback_duration: 1000,
         show_stim_with_feedback: false,
@@ -268,7 +284,7 @@ for (i = 0; i < exp_len; i++) {
         correct_text: '<div class = centerbox><div style="color:green"; class = center-text>Correct!</div></div>',
         incorrect_text: '<div class = centerbox><div style="color:red"; class = center-text>Incorrect</div></div>',
         timeout_message: '<div class = centerbox><div class = flanker-text>Respond faster!</div></div>',
-        choices: [70, 72],
+        choices: [left_key, right_key],
         data: test_trials.data[i],
         timing_feedback_duration: 1000,
         timing_response: 1500,
