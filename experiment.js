@@ -2,14 +2,14 @@
 /* Define experimental variables */
 /* ************************************ */
 // generic task variables
-var run_attention_checks = false
-var attention_check_thresh = 0.45
 var sumInstructTime = 0 //ms
 var instructTimeThresh = 0 ///in seconds
 
 // number of trails
-practice_len = 1 // was 12
-exp_len = 5 // was 100
+practice_len = 5 // was 12
+exp_len = 35 // was 100
+attention_per_test_trials = 15
+attention_len = Math.floor(exp_len / attention_per_test_trials)
 
 // stimuli
 left_key = "S"
@@ -18,30 +18,17 @@ congruent_right = ">>>>>"
 congruent_left = "<<<<<"
 incongruent_right = "<<><<"
 incongruent_left = ">><>>"
+attention_right = ">"
+attention_left = "<"
 
 
 /* *************************/
 /* Define helper functions */
 
 /* *************************/
-function evalAttentionChecks() {
-    var check_percent = 1
-    if (run_attention_checks) {
-        var attention_check_trials = jsPsych.data.getTrialsOfType('attention-check')
-        var checks_passed = 0
-        for (var i = 0; i < attention_check_trials.length; i++) {
-            if (attention_check_trials[i].correct === true) {
-                checks_passed += 1
-            }
-        }
-        check_percent = checks_passed / attention_check_trials.length
-    }
-    return check_percent
-}
 
 var getInstructFeedback = function () {
-    return '<div class = centerbox><p class = center-block-text>' + feedback_instruct_text +
-        '</p></div>'
+    return `<div class = centerbox><p class = center-block-text>${feedback_instruct_text}</p></div>`
 }
 
 var changeData = function () {
@@ -74,6 +61,7 @@ var correct_responses = jsPsych.randomization.repeat([
     ["left arrow", 37],
     ["right arrow", 39]
 ], 1)
+
 var test_stimuli = [{
     image: `<div class = centerbox><div class = flanker-text>${incongruent_right}</div></div>`,
     data: {
@@ -117,27 +105,30 @@ for (i = 0; i < test_trials.data.length; i++) {
     test_response_array.push(test_trials.data[i].correct_response)
 }
 
+var attention_stimuli = [{
+    image: `<div class = centerbox><div class = flanker-text>${attention_right}</div></div>`,
+    data: {
+        correct_response: right_key,
+        trial_id: 'attention_check'
+    }
+}, {
+    image: `<div class = centerbox><div class = flanker-text>${attention_left}</div></div>`,
+    data: {
+        correct_response: left_key,
+        trial_id: 'attention_check'
+    }
+}];
+
+var attention_checks = jsPsych.randomization.repeat(attention_stimuli, attention_len / 2, true);
+var attention_response_array = [];
+for (i = 0; i < attention_checks.data.length; i++) {
+    attention_response_array.push(attention_checks.data[i].correct_response)
+}
+
 
 /* ************************************ */
 /* Set up jsPsych blocks */
 /* ************************************ */
-// Set up attention check node
-var attention_check_block = {
-    type: 'attention-check',
-    data: {
-        trial_id: "attention_check"
-    },
-    timing_response: 180000,
-    response_ends_trial: true,
-    timing_post_trial: 200
-}
-
-var attention_node = {
-    timeline: [attention_check_block],
-    conditional_function: function () {
-        return run_attention_checks
-    }
-}
 
 //Set up post task questionnaire
 var post_task_block = {
@@ -145,15 +136,15 @@ var post_task_block = {
     data: {
         trial_id: "post task questions"
     },
-    questions: ['<p class = center-block-text style = "font-size: 20px">Please summarize what you were asked to do in this task.</p>',
+    questions: [
+        '<p class = center-block-text style = "font-size: 20px">Please summarize what you were asked to do in this task.</p>',
         '<p class = center-block-text style = "font-size: 20px">Do you have any comments about this task?</p>'],
     rows: [15, 15],
     columns: [60, 60]
 };
 
 /* define static blocks */
-var feedback_instruct_text =
-    'Welcome to the experiment. Press <strong>enter</strong> to begin.'
+var feedback_instruct_text = `Welcome to the experiment. Press <strong>enter</strong> to begin.`
 var feedback_instruct_block = {
     type: 'poldrack-text',
     cont_key: [13],
@@ -169,11 +160,17 @@ var feedback_instruct_block = {
 var instructions_block = {
     type: 'poldrack-instructions',
     pages: [
-        `<div class = centerbox><p class = block-text>In this experiment you will see five character strings composed of
-         '<' and '>'. For instance, you might see '${congruent_left}' or '${incongruent_left}'. Your task is to respond 
-         to the <strong>middle</strong> character by pressing the '${left_key}' key if it was '<', and the
-         '${right_key}' key if it was '>'. So if you see '${incongruent_right}' you would press the '${right_key}' key.</p>
-         <p class = block-text>After each response you will get feedback about whether you were correct or not. We will start with a short practice set.</p></div>`
+        `<div class = centerbox>
+         <p class = block-title>Instructions</p>
+         <p class = block-text>In this game you will see five character strings composed of '<' and '>'.  For instance,
+         you might see '${congruent_left}' or '${incongruent_left}'.</p>
+         <p class = block-text>Your goal is to respond <strong>as quickly as you can</strong> to the <strong>middle</strong> character, as follows:</p>
+         <p class = block-text style="text-align: center;">press the '<span style="color:darkgreen"><b>${left_key}</b></span>' key if it was '<span style="color:darkgreen"><b><</b></span>' <br>
+         press the '<span style="color:darkblue"><b>${right_key}</b></span>' key if it was '<span style="color:darkblue"><b>></b></span>'</p>
+         <p class = block-text><u>Example:</u> if you see '${incongruent_right}', press the '${right_key}' key.</p>
+         <p class = block-text>Note: if your perforamnce indicates you are not really trying, you may not be eligible for payment!</p>
+         <p class = block-text>We will start with a short practice set. When ready, click the button below.</p>
+         </div>`
     ],
     allow_keys: false,
     data: {
@@ -195,7 +192,7 @@ var instruction_node = {
         }
         if (sumInstructTime <= instructTimeThresh * 1000) {
             feedback_instruct_text =
-                'Read through instructions too quickly.  Please take your time and make sure you understand the instructions. Press <strong>enter</strong> to continue.'
+                'Read through instructions too quickly. Please take your time and make sure you understand the instructions. Press <strong>enter</strong> to continue.'
             return true
         } else if (sumInstructTime > instructTimeThresh * 1000) {
             feedback_instruct_text = 'Done with instructions. Press <strong>enter</strong> to continue.'
@@ -252,8 +249,8 @@ for (i = 0; i < practice_len; i++) {
         stimulus: practice_trials.image[i],
         is_html: true,
         key_answer: practice_response_array[i],
-        correct_text: '<div class = centerbox><div style="color:green"; class = center-text>Correct!</div></div>',
-        incorrect_text: '<div class = centerbox><div style="color:red"; class = center-text>Incorrect</div></div>',
+        correct_text: '<div class = centerbox><div style="color:green" class = center-text>Correct!</div></div>',
+        incorrect_text: '<div class = centerbox><div style="color:red" class = center-text>Incorrect</div></div>',
         timeout_message: '<div class = centerbox><div class = flanker-text>Respond faster</div></div>',
         choices: [left_key, right_key],
         data: practice_trials.data[i],
@@ -270,19 +267,46 @@ for (i = 0; i < practice_len; i++) {
     flanker_experiment.push(practice_block)
 }
 
-flanker_experiment.push(attention_node)
 flanker_experiment.push(start_test_block)
 
 /* define test block */
 for (i = 0; i < exp_len; i++) {
+    if (i > 0 && i % attention_per_test_trials === 0) {
+        flanker_experiment.push(fixation_block)
+
+        attention_i = (i / 15) - 1
+        var attention_block = {
+            type: 'poldrack-categorize',
+            stimulus: attention_checks.image[attention_i],
+            is_html: true,
+            key_answer: attention_response_array[attention_i],
+            correct_text: '', // TODO: is there a way to drop the part where it shows text? For now, this is a workaround
+            incorrect_text: '', // TODO: see prev line
+            timeout_message: '<div class = centerbox><div class = flanker-text>Respond faster!</div></div>',
+            choices: [left_key, right_key],
+            data: attention_checks.data[attention_i],
+            timing_feedback_duration: 1000,
+            timing_response: 1500,
+            show_stim_with_feedback: false,
+            timing_post_trial: 500,
+            on_finish: function () {
+                jsPsych.data.addDataToLastTrial({
+                    exp_stage: "attention"
+                })
+            }
+        }
+        flanker_experiment.push(attention_block)
+    }
+
+
     flanker_experiment.push(fixation_block)
     var test_block = {
         type: 'poldrack-categorize',
         stimulus: test_trials.image[i],
         is_html: true,
         key_answer: test_response_array[i],
-        correct_text: '<div class = centerbox><div style="color:green"; class = center-text>Correct!</div></div>',
-        incorrect_text: '<div class = centerbox><div style="color:red"; class = center-text>Incorrect</div></div>',
+        correct_text: '', // TODO: is there a way to drop the part where it shows text? For now, this is a workaround
+        incorrect_text: '', // TODO: see prev line
         timeout_message: '<div class = centerbox><div class = flanker-text>Respond faster!</div></div>',
         choices: [left_key, right_key],
         data: test_trials.data[i],
@@ -298,6 +322,5 @@ for (i = 0; i < exp_len; i++) {
     }
     flanker_experiment.push(test_block)
 }
-flanker_experiment.push(attention_node)
 flanker_experiment.push(post_task_block)
 flanker_experiment.push(end_block)
