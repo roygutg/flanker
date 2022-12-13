@@ -165,10 +165,10 @@ var instructions_block = {
          <p class = block-text>In this game you will see five character strings composed of '<' and '>'.  For instance,
          you might see '${congruent_left}' or '${incongruent_left}'.</p>
          <p class = block-text>Your goal is to respond <strong>as quickly as you can</strong> to the <strong>middle</strong> character, as follows:</p>
-         <p class = block-text style="text-align: center;">press the '<span style="color:darkgreen"><b>${left_key}</b></span>' key if it was '<span style="color:darkgreen"><b><</b></span>' <br>
-         press the '<span style="color:darkblue"><b>${right_key}</b></span>' key if it was '<span style="color:darkblue"><b>></b></span>'</p>
+         <p class = block-text style="text-align: center;">press the '<span style="color:darkgreen"><b>${left_key}</b></span>' key if it's '<span style="color:darkgreen"><b><</b></span>' <br>
+         press the '<span style="color:darkblue"><b>${right_key}</b></span>' key if it's '<span style="color:darkblue"><b>></b></span>'</p>
          <p class = block-text><u>Example:</u> if you see '${incongruent_right}', press the '${right_key}' key.</p>
-         <p class = block-text>Note: if your perforamnce indicates you are not really trying, you may not be eligible for payment!</p>
+         <p class = block-text>Please do your best to stay focused and complete all repetitions. If your performance indicates mindless clicking, you may not be eligible for payment.</p>
          <p class = block-text>We will start with a short practice set. When ready, click the button below.</p>
          </div>`
     ],
@@ -251,7 +251,7 @@ for (i = 0; i < practice_len; i++) {
         key_answer: practice_response_array[i],
         correct_text: '<div class = centerbox><div style="color:green" class = center-text>Correct!</div></div>',
         incorrect_text: '<div class = centerbox><div style="color:red" class = center-text>Incorrect</div></div>',
-        timeout_message: '<div class = centerbox><div class = flanker-text>Respond faster</div></div>',
+        timeout_message: '<div class = centerbox><div class = center-text>Respond faster</div></div>',
         choices: [left_key, right_key],
         data: practice_trials.data[i],
         timing_feedback_duration: 1000,
@@ -282,7 +282,7 @@ for (i = 0; i < exp_len; i++) {
             key_answer: attention_response_array[attention_i],
             correct_text: '', // TODO: is there a way to drop the part where it shows text? For now, this is a workaround
             incorrect_text: '', // TODO: see prev line
-            timeout_message: '<div class = centerbox><div class = flanker-text>Respond faster!</div></div>',
+            timeout_message: '<div class = centerbox><div class = center-text>Respond faster!</div></div>',
             choices: [left_key, right_key],
             data: attention_checks.data[attention_i],
             timing_feedback_duration: 1000,
@@ -307,7 +307,7 @@ for (i = 0; i < exp_len; i++) {
         key_answer: test_response_array[i],
         correct_text: '', // TODO: is there a way to drop the part where it shows text? For now, this is a workaround
         incorrect_text: '', // TODO: see prev line
-        timeout_message: '<div class = centerbox><div class = flanker-text>Respond faster!</div></div>',
+        timeout_message: '<div class = centerbox><div class = center-text>Respond faster!</div></div>',
         choices: [left_key, right_key],
         data: test_trials.data[i],
         timing_feedback_duration: 1000,
