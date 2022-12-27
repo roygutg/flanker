@@ -106,7 +106,7 @@ body {
   text-align: center;
   font-size: 150px;
   position: relative;
-  top: 35%;  /* not centered, so it doesn't perfectly indicate target stimulus location */
+  top: 50%;
   transform: translateY(-50%);
   -webkit-transform: translateY(-50%);
 }
