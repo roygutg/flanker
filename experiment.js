@@ -11,7 +11,7 @@ exp_len = 35 // was 100
 attention_per_test_trials = 15
 attention_len = Math.floor(exp_len / attention_per_test_trials)
 
-// stimuli
+// consts
 left_key = "S"
 right_key = "L"
 congruent_right = ">>>>>"
@@ -20,6 +20,9 @@ incongruent_right = "<<><<"
 incongruent_left = ">><>>"
 attention_right = ">"
 attention_left = "<"
+CORRECT_FEEDBACK = '<div class = centerbox><div style="color:green" class = center-text>Correct!</div></div>'
+INCORRECT_FEEDBACK = '<div class = centerbox><div style="color:red" class = center-text>Incorrect</div></div>'
+TIMEOUT_MSG = '<div class = centerbox><div class = center-text>Respond faster</div></div>'
 
 
 /* *************************/
@@ -57,11 +60,6 @@ var changeData = function () {
 
 
 // task specific variables
-var correct_responses = jsPsych.randomization.repeat([
-    ["left arrow", 37],
-    ["right arrow", 39]
-], 1)
-
 var test_stimuli = [{
     image: `<div class = centerbox><div class = flanker-text>${incongruent_right}</div></div>`,
     data: {
@@ -137,8 +135,8 @@ var post_task_block = {
         trial_id: "post task questions"
     },
     questions: [
-        '<p class = center-block-text style = "font-size: 20px">Please summarize what you were asked to do in this task.</p>',
-        '<p class = center-block-text style = "font-size: 20px">Do you have any comments about this task?</p>'],
+        `<p class = center-block-text style = "font-size: 20px">Did you stay focused on the task for its entire duration? Were you distracted by your environment during this time?</p>`,
+        `<p class = center-block-text style = "font-size: 20px">Do you have any comments about this task?</p>`],
     rows: [15, 15],
     columns: [60, 60]
 };
@@ -156,7 +154,6 @@ var feedback_instruct_block = {
     timing_response: 180000
 };
 
-/// This ensures that the subject does not read through the instructions too quickly. If they do it too quickly, then we will go over the loop again.
 var instructions_block = {
     type: 'poldrack-instructions',
     pages: [
@@ -168,7 +165,11 @@ var instructions_block = {
          <p class = block-text style="text-align: center;">press the '<span style="color:darkgreen"><b>${left_key}</b></span>' key if it's '<span style="color:darkgreen"><b><</b></span>' <br>
          press the '<span style="color:darkblue"><b>${right_key}</b></span>' key if it's '<span style="color:darkblue"><b>></b></span>'</p>
          <p class = block-text><u>Example:</u> if you see '${incongruent_right}', press the '${right_key}' key.</p>
-         <p class = block-text>Please do your best to stay focused and complete all repetitions. If your performance indicates mindless clicking, you may not be eligible for payment.</p>
+         </div>`,
+
+        `<div class = centerbox>
+         <p class = block-title>Instructions</p>
+         <p class = block-text>Do your best to stay focused. Too many wrong responses, or failing attention checks that will appear along the way, may disqualify you from payment.</p>
          <p class = block-text>We will start with a short practice set. When ready, click the button below.</p>
          </div>`
     ],
@@ -182,20 +183,18 @@ var instructions_block = {
 
 var instruction_node = {
     timeline: [feedback_instruct_block, instructions_block],
-    /* This function defines stopping criteria */
     loop_function: function (data) {
+    // This ensures that the subject does not read through the instructions too quickly. If they do it too quickly, then we will go over the loop again.
         for (i = 0; i < data.length; i++) {
             if ((data[i].trial_type == 'poldrack-instructions') && (data[i].rt != -1)) {
-                rt = data[i].rt
-                sumInstructTime = sumInstructTime + rt
+                sumInstructTime += data[i].rt
             }
         }
         if (sumInstructTime <= instructTimeThresh * 1000) {
-            feedback_instruct_text =
-                'Read through instructions too quickly. Please take your time and make sure you understand the instructions. Press <strong>enter</strong> to continue.'
+            feedback_instruct_text = `Read through instructions too quickly. Please take your time and make sure you understand the instructions. Press <strong>enter</strong> to continue.`
             return true
         } else if (sumInstructTime > instructTimeThresh * 1000) {
-            feedback_instruct_text = 'Done with instructions. Press <strong>enter</strong> to continue.'
+            feedback_instruct_text = `Done with instructions. Press <strong>enter</strong> to continue.`
             return false
         }
     }
@@ -249,9 +248,9 @@ for (i = 0; i < practice_len; i++) {
         stimulus: practice_trials.image[i],
         is_html: true,
         key_answer: practice_response_array[i],
-        correct_text: '<div class = centerbox><div style="color:green" class = center-text>Correct!</div></div>',
-        incorrect_text: '<div class = centerbox><div style="color:red" class = center-text>Incorrect</div></div>',
-        timeout_message: '<div class = centerbox><div class = center-text>Respond faster</div></div>',
+        correct_text: CORRECT_FEEDBACK,
+        incorrect_text: INCORRECT_FEEDBACK,
+        timeout_message: TIMEOUT_MSG,
         choices: [left_key, right_key],
         data: practice_trials.data[i],
         timing_feedback_duration: 1000,
@@ -280,12 +279,12 @@ for (i = 0; i < exp_len; i++) {
             stimulus: attention_checks.image[attention_i],
             is_html: true,
             key_answer: attention_response_array[attention_i],
-            correct_text: '', // TODO: is there a way to drop the part where it shows text? For now, this is a workaround
-            incorrect_text: '', // TODO: see prev line
-            timeout_message: '<div class = centerbox><div class = center-text>Respond faster!</div></div>',
+            correct_text: '',
+            incorrect_text: '',
+            timeout_message: TIMEOUT_MSG,
             choices: [left_key, right_key],
             data: attention_checks.data[attention_i],
-            timing_feedback_duration: 1000,
+            timing_feedback_duration: 1, // can't set to 0 because if this evaluates to false it reverts to default
             timing_response: 1500,
             show_stim_with_feedback: false,
             timing_post_trial: 500,
@@ -305,12 +304,12 @@ for (i = 0; i < exp_len; i++) {
         stimulus: test_trials.image[i],
         is_html: true,
         key_answer: test_response_array[i],
-        correct_text: '', // TODO: is there a way to drop the part where it shows text? For now, this is a workaround
-        incorrect_text: '', // TODO: see prev line
-        timeout_message: '<div class = centerbox><div class = center-text>Respond faster!</div></div>',
+        correct_text: '',
+        incorrect_text: '',
+        timeout_message: TIMEOUT_MSG,
         choices: [left_key, right_key],
         data: test_trials.data[i],
-        timing_feedback_duration: 1000,
+        timing_feedback_duration: 1, // can't set to 0 because if this evaluates to false it reverts to default
         timing_response: 1500,
         show_stim_with_feedback: false,
         timing_post_trial: 500,
