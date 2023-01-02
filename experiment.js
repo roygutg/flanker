@@ -128,19 +128,6 @@ for (i = 0; i < attention_checks.data.length; i++) {
 /* Set up jsPsych blocks */
 /* ************************************ */
 
-//Set up post task questionnaire
-var post_task_block = {
-    type: 'survey-text',
-    data: {
-        trial_id: "post task questions"
-    },
-    questions: [
-        `<p class = center-block-text style = "font-size: 20px">Did you stay focused on the task for its entire duration? Were you distracted by your environment during this time?</p>`,
-        `<p class = center-block-text style = "font-size: 20px">Do you have any comments about this task?</p>`],
-    rows: [15, 15],
-    columns: [60, 60]
-};
-
 /* define static blocks */
 var feedback_instruct_text = `Welcome to the experiment. Press <strong>enter</strong> to begin.`
 var feedback_instruct_block = {
@@ -169,7 +156,7 @@ var instructions_block = {
 
         `<div class = centerbox>
          <p class = block-title>Instructions</p>
-         <p class = block-text>Do your best to stay focused. Too many wrong responses, or failing attention checks that will appear along the way, may disqualify you from payment.</p>
+         <p class = block-text>Do your best to stay focused. Too many wrong responses may disqualify you from payment.</p>
          <p class = block-text>We will start with a short practice set. When ready, click the button below.</p>
          </div>`
     ],
@@ -184,7 +171,7 @@ var instructions_block = {
 var instruction_node = {
     timeline: [feedback_instruct_block, instructions_block],
     loop_function: function (data) {
-    // This ensures that the subject does not read through the instructions too quickly. If they do it too quickly, then we will go over the loop again.
+        // This ensures that the subject does not read through the instructions too quickly. If they do it too quickly, then we will go over the loop again.
         for (i = 0; i < data.length; i++) {
             if ((data[i].trial_type == 'poldrack-instructions') && (data[i].rt != -1)) {
                 sumInstructTime += data[i].rt
@@ -270,32 +257,33 @@ flanker_experiment.push(start_test_block)
 
 /* define test block */
 for (i = 0; i < exp_len; i++) {
-    if (i > 0 && i % attention_per_test_trials === 0) {
-        flanker_experiment.push(fixation_block)
-
-        attention_i = (i / 15) - 1
-        var attention_block = {
-            type: 'poldrack-categorize',
-            stimulus: attention_checks.image[attention_i],
-            is_html: true,
-            key_answer: attention_response_array[attention_i],
-            correct_text: '',
-            incorrect_text: '',
-            timeout_message: TIMEOUT_MSG,
-            choices: [left_key, right_key],
-            data: attention_checks.data[attention_i],
-            timing_feedback_duration: 1, // can't set to 0 because if this evaluates to false it reverts to default
-            timing_response: 1500,
-            show_stim_with_feedback: false,
-            timing_post_trial: 500,
-            on_finish: function () {
-                jsPsych.data.addDataToLastTrial({
-                    exp_stage: "attention"
-                })
-            }
-        }
-        flanker_experiment.push(attention_block)
-    }
+    /* add attention checks: */
+    // if (i > 0 && i % attention_per_test_trials === 0) {
+    //     flanker_experiment.push(fixation_block)
+    //
+    //     attention_i = (i / 15) - 1
+    //     var attention_block = {
+    //         type: 'poldrack-categorize',
+    //         stimulus: attention_checks.image[attention_i],
+    //         is_html: true,
+    //         key_answer: attention_response_array[attention_i],
+    //         correct_text: '',
+    //         incorrect_text: '',
+    //         timeout_message: TIMEOUT_MSG,
+    //         choices: [left_key, right_key],
+    //         data: attention_checks.data[attention_i],
+    //         timing_feedback_duration: 1, // can't set to 0 because if this evaluates to false it reverts to default
+    //         timing_response: 1500,
+    //         show_stim_with_feedback: false,
+    //         timing_post_trial: 500,
+    //         on_finish: function () {
+    //             jsPsych.data.addDataToLastTrial({
+    //                 exp_stage: "attention"
+    //             })
+    //         }
+    //     }
+    //     flanker_experiment.push(attention_block)
+    // }
 
 
     flanker_experiment.push(fixation_block)
@@ -321,5 +309,4 @@ for (i = 0; i < exp_len; i++) {
     }
     flanker_experiment.push(test_block)
 }
-flanker_experiment.push(post_task_block)
 flanker_experiment.push(end_block)
