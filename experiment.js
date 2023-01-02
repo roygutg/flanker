@@ -146,7 +146,7 @@ var instructions_block = {
     pages: [
         `<div class = centerbox>
          <p class = block-title>Instructions</p>
-         <p class = block-text>In this game you will see five character strings composed of '<' and '>'.  For instance,
+         <p class = block-text>In this task you will see five character strings composed of '<' and '>'.  For instance,
          you might see '${congruent_left}' or '${incongruent_left}'.</p>
          <p class = block-text>Your goal is to respond <strong>as quickly as you can</strong> to the <strong>middle</strong> character, as follows:</p>
          <p class = block-text style="text-align: center;">press the '<span style="color:darkgreen"><b>${left_key}</b></span>' key if it's '<span style="color:darkgreen"><b><</b></span>' <br>
@@ -157,7 +157,7 @@ var instructions_block = {
         `<div class = centerbox>
          <p class = block-title>Instructions</p>
          <p class = block-text>Do your best to stay focused. Too many wrong responses may disqualify you from payment.</p>
-         <p class = block-text>We will start with a short practice set. When ready, click the button below.</p>
+         <p class = block-text>We will start with a short practice round. When ready, click the button below.</p>
          </div>`
     ],
     allow_keys: false,
@@ -205,7 +205,8 @@ var start_test_block = {
         trial_id: "test_intro"
     },
     timing_response: 180000,
-    text: '<div class = centerbox><p class = center-block-text>Done with practice. Starting test.</p><p class = center-block-text>Press <strong>enter</strong> to begin.</p></div>',
+    text: `<div class = centerbox><p class = center-block-text>Done with practice, starting test round.</p>
+           <p class = center-block-text>Press <strong>enter</strong> to begin.</p></div>`,
     cont_key: [13],
     timing_post_trial: 1000
 };
