@@ -75,8 +75,12 @@ jsPsych.plugins["poldrack-categorize"] = (function() {
     // create response function
     var after_response = function(info) {
       // make it case-insensitive:
-        info.key = String.fromCharCode(info.key).toLowerCase().charCodeAt(0)
-        trial.key_answer = trial.key_answer.toLowerCase().charCodeAt(0)
+      if (info.key >= 65 && info.key <= 90) {
+        info.key += 32;
+      }
+      if (trial.key_answer >= 65 && trial.key_answer <= 90) {
+        trial.key_answer += 32;
+      }
 
       // after a valid response, the stimulus will have the CSS class 'responded'
       // which can be used to provide visual feedback that a response was recorded
