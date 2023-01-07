@@ -12,8 +12,8 @@ attention_per_test_trials = 15
 attention_len = Math.floor(exp_len / attention_per_test_trials)
 
 // consts
-left_key = "S"
-right_key = "L"
+left_key = 37
+right_key = 39
 congruent_right = ">>>>>"
 congruent_left = "<<<<<"
 incongruent_right = "<<><<"
@@ -22,7 +22,7 @@ attention_right = ">"
 attention_left = "<"
 CORRECT_FEEDBACK = '<div class = centerbox><div style="color:green" class = center-text>Correct!</div></div>'
 INCORRECT_FEEDBACK = '<div class = centerbox><div style="color:red" class = center-text>Incorrect</div></div>'
-TIMEOUT_MSG = '<div class = centerbox><div class = center-text>Respond faster</div></div>'
+TIMEOUT_MSG = '<div class = centerbox><div class = center-text>Please respond faster</div></div>'
 
 
 /* *************************/
@@ -128,36 +128,22 @@ for (i = 0; i < attention_checks.data.length; i++) {
 /* Set up jsPsych blocks */
 /* ************************************ */
 
-/* define static blocks */
-var feedback_instruct_text = `Welcome to the experiment. Press <strong>enter</strong> to begin.`
-var feedback_instruct_block = {
-    type: 'poldrack-text',
-    cont_key: [13],
-    data: {
-        trial_id: "instruction"
-    },
-    text: getInstructFeedback,
-    timing_post_trial: 0,
-    timing_response: 180000
-};
-
 var instructions_block = {
     type: 'poldrack-instructions',
     pages: [
         `<div class = centerbox>
          <p class = block-title>Instructions</p>
-         <p class = block-text>In this task you will see five character strings composed of '<' and '>'.  For instance,
-         you might see '${congruent_left}' or '${incongruent_left}'.</p>
-         <p class = block-text>Your goal is to respond <strong>as quickly as you can</strong> to the <strong>middle</strong> character, as follows:</p>
-         <p class = block-text style="text-align: center;">press the '<span style="color:darkgreen"><b>${left_key}</b></span>' key if it's '<span style="color:darkgreen"><b><</b></span>' <br>
-         press the '<span style="color:darkblue"><b>${right_key}</b></span>' key if it's '<span style="color:darkblue"><b>></b></span>'</p>
-         <p class = block-text><u>Example:</u> if you see '${incongruent_right}', press the '${right_key}' key.</p>
+         <p class = block-text>In this task you will see strings of five arrow characters. For instance, you might see '${congruent_left}' or '${incongruent_left}'.</p>
+         <p class = block-text>Your goal is to respond <strong>as quickly as you can</strong> to the <strong>middle</strong> arrow, using the arrow keys in your keyboard:</p>
+         <p class = block-text style="text-align: center;">press the <span style="color:darkgreen"><b>left arrow key</b></span> key if it's '<span style="color:darkgreen"><b><</b></span>' <br>
+         press the <span style="color:darkblue"><b>right arrow key</b></span> key if it's '<span style="color:darkblue"><b>></b></span>'</p>
+         <p class = block-text><u>Example:</u> If you see '${incongruent_right}', press the right arrow key.</p>
          </div>`,
 
         `<div class = centerbox>
          <p class = block-title>Instructions</p>
-         <p class = block-text>Do your best to stay focused. Too many wrong responses may disqualify you from payment.</p>
-         <p class = block-text>We will start with a short practice round. When ready, click the button below.</p>
+         <p class = block-text>Do your best to stay focused. Too many wrong responses will disqualify you from payment.</p>
+         <p class = block-text>We will start with a short practice round. When you are ready, click the button below.</p>
          </div>`
     ],
     allow_keys: false,
@@ -168,24 +154,39 @@ var instructions_block = {
     timing_post_trial: 1000
 };
 
-var instruction_node = {
-    timeline: [feedback_instruct_block, instructions_block],
-    loop_function: function (data) {
-        // This ensures that the subject does not read through the instructions too quickly. If they do it too quickly, then we will go over the loop again.
-        for (i = 0; i < data.length; i++) {
-            if ((data[i].trial_type == 'poldrack-instructions') && (data[i].rt != -1)) {
-                sumInstructTime += data[i].rt
-            }
-        }
-        if (sumInstructTime <= instructTimeThresh * 1000) {
-            feedback_instruct_text = `Read through instructions too quickly. Please take your time and make sure you understand the instructions. Press <strong>enter</strong> to continue.`
-            return true
-        } else if (sumInstructTime > instructTimeThresh * 1000) {
-            feedback_instruct_text = `Done with instructions. Press <strong>enter</strong> to continue.`
-            return false
-        }
-    }
-}
+/* This part is used to force instruction rereading if they were read too quickly. If using, the first element in
+ the experiment timeline should be instruction_node instead of instructions_block */
+// var feedback_instruct_text = `Welcome to the task. Press <strong>enter</strong> to begin.`
+// var feedback_instruct_block = {
+//     type: 'poldrack-text',
+//     cont_key: [13],
+//     data: {
+//         trial_id: "instruction"
+//     },
+//     text: getInstructFeedback,
+//     timing_post_trial: 0,
+//     timing_response: 180000
+// };
+//
+// var instruction_node = {
+//     timeline: [feedback_instruct_block, instructions_block],
+//     loop_function: function (data) {
+//         // This ensures that the subject does not read through the instructions too quickly. If they do it too quickly, then we will go over the loop again.
+//         for (i = 0; i < data.length; i++) {
+//             if ((data[i].trial_type == 'poldrack-instructions') && (data[i].rt != -1)) {
+//                 sumInstructTime += data[i].rt
+//             }
+//         }
+//         if (sumInstructTime <= instructTimeThresh * 1000) {
+//             feedback_instruct_text = `You read through instructions too quickly. Please take your time and make sure
+//             you understand the instructions. Press <strong>enter</strong> to continue.`
+//             return true
+//         } else if (sumInstructTime > instructTimeThresh * 1000) {
+//             feedback_instruct_text = `Done with instructions. Press <strong>enter</strong> to continue.`
+//             return false
+//         }
+//     }
+// }
 
 var end_block = {
     type: 'poldrack-text',
@@ -194,7 +195,8 @@ var end_block = {
         trial_id: "end",
         exp_id: 'flanker'
     },
-    text: '<div class = centerbox><p class = center-block-text>Thanks for completing this task!</p><p class = center-block-text>Press <strong>enter</strong> to continue.</p></div>',
+    text: `<div class = centerbox><p class = center-block-text>Task completed!</p>
+           <p class = center-block-text>Press <strong>enter</strong> to continue the experiment.</p></div>`,
     cont_key: [13],
     timing_post_trial: 0
 };
@@ -205,7 +207,7 @@ var start_test_block = {
         trial_id: "test_intro"
     },
     timing_response: 180000,
-    text: `<div class = centerbox><p class = center-block-text>Done with practice, starting test round.</p>
+    text: `<div class = centerbox><p class = center-block-text>Practice complete. We will now start the test round.</p>
            <p class = center-block-text>Press <strong>enter</strong> to begin.</p></div>`,
     cont_key: [13],
     timing_post_trial: 1000
@@ -227,7 +229,7 @@ var fixation_block = {
 
 //Set up experiment
 flanker_experiment = []
-flanker_experiment.push(instruction_node);
+flanker_experiment.push(instructions_block);
 
 for (i = 0; i < practice_len; i++) {
     flanker_experiment.push(fixation_block)
