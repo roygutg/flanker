@@ -510,7 +510,7 @@ var jsPsych = (function() {
       if (keyboardNotAllowed) {
         go();
       } else {
-        DOM_target.append(`<div class = jspsych-instructions-nav><p>Welcome to the "Flanker" task. Click the button below to begin.</p><button id="jspsych-fullscreen-btn" class="jspsych-btn">Begin Task</button></div>');
+        DOM_target.append(`<div class = jspsych-instructions-nav><p>Welcome to the "Flanker" task. Click the button below to begin.</p><button id="jspsych-fullscreen-btn" class="jspsych-btn">Begin Task</button></div>`);
         $('#jspsych-fullscreen-btn').on('click', function() {
           var element = document.documentElement;
           if (element.requestFullscreen) {
