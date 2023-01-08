@@ -143,7 +143,7 @@ var instructions_block = {
         `<div class = centerbox>
          <p class = block-title>Instructions</p>
          <p class = block-text>Do your best to stay focused. Too many wrong responses will disqualify you from payment.</p>
-         <p class = block-text>We will start with a short practice round. When you are ready, click the button below.</p>
+         <p class = block-text>We will start with a short practice round.</p>
          </div>`
     ],
     allow_keys: false,
