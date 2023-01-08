@@ -133,17 +133,17 @@ var instructions_block = {
     pages: [
         `<div class = centerbox>
          <p class = block-title>Instructions</p>
-         <p class = block-text>In this task you will see strings of five arrow characters. For instance, you might see '${congruent_left}' or '${incongruent_left}'.</p>
+         <p class = block-text>In this task you will see strings of five arrow characters. For instance, you might see ${congruent_left} or ${incongruent_left}.</p>
          <p class = block-text>Your goal is to respond <strong>as quickly as you can</strong> to the <strong>middle</strong> arrow, using the arrow keys in your keyboard:</p>
-         <p class = block-text style="text-align: center;">press the <span style="color:darkgreen"><b>left arrow key</b></span> key if it's '<span style="color:darkgreen"><b><</b></span>' <br>
-         press the <span style="color:darkblue"><b>right arrow key</b></span> key if it's '<span style="color:darkblue"><b>></b></span>'</p>
-         <p class = block-text><u>Example:</u> If you see '${incongruent_right}', press the right arrow key.</p>
+         <p class = block-text style="text-align: center;">press the <span style="color:darkgreen"><b>left arrow key</b></span> if it's <span style="color:darkgreen"><b><</b></span> <br>
+         press the <span style="color:darkblue"><b>right arrow key</b></span> if it's <span style="color:darkblue"><b>></b></span></p>
+         <p class = block-text><u>Example:</u> If you see ${incongruent_right}, press the right arrow key.</p>
          </div>`,
 
         `<div class = centerbox>
          <p class = block-title>Instructions</p>
          <p class = block-text>Do your best to stay focused. Too many wrong responses will disqualify you from payment.</p>
-         <p class = block-text>We will start with a short practice round.</p>
+         <p class = block-text>We will start with a short practice round. When you're ready, click "End Instructions" below.</p>
          </div>`
     ],
     allow_keys: false,
