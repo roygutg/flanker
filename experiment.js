@@ -7,7 +7,7 @@ var instructTimeThresh = 0 ///in seconds
 
 // number of trails
 practice_len = 5 // was 12
-exp_len = 35 // was 100
+exp_len = 5 // was 100
 attention_per_test_trials = 15
 attention_len = Math.floor(exp_len / attention_per_test_trials)
 
@@ -297,7 +297,7 @@ for (i = 0; i < exp_len; i++) {
         key_answer: test_response_array[i],
         correct_text: '',
         incorrect_text: '',
-        timeout_message: TIMEOUT_MSG,
+        timeout_message: '',
         choices: [left_key, right_key],
         data: test_trials.data[i],
         timing_feedback_duration: 1, // can't set to 0 because if this evaluates to false it reverts to default
