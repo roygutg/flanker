@@ -38,8 +38,9 @@
             },
 
             on_finish: function (data) {
+                const prolificID = jsPsych.data.getURLVariable('PROLIFIC_PID');
                 jsPsych.data.addProperties({
-                    subject_id: jsPsych.data.getURLVariable('PROLIFIC_PID')
+                    subject_id: prolificID
                 });
 
                 // Serialize the data
@@ -75,7 +76,7 @@
                     // });
                 })
 
-                window.location.replace(`https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm`);
+                window.location.replace(`https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm?PROLIFIC_PID=${prolificID}`);
             }
 
         });
