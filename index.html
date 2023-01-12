@@ -38,6 +38,9 @@
             },
 
             on_finish: function (data) {
+                jsPsych.data.addProperties({
+                    subject_id: jsPsych.data.getURLVariable('PROLIFIC_PID')
+                });
 
                 // Serialize the data
                 var promise = new Promise(function (resolve, reject) {
