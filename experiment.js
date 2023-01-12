@@ -117,11 +117,11 @@ var attention_stimuli = [{
     }
 }];
 
-var attention_checks = jsPsych.randomization.repeat(attention_stimuli, attention_len / 2, true);
-var attention_response_array = [];
-for (i = 0; i < attention_checks.data.length; i++) {
-    attention_response_array.push(attention_checks.data[i].correct_response)
-}
+// var attention_checks = jsPsych.randomization.repeat(attention_stimuli, attention_len / 2, true);
+// var attention_response_array = [];
+// for (i = 0; i < attention_checks.data.length; i++) {
+//     attention_response_array.push(attention_checks.data[i].correct_response)
+// }
 
 
 /* ************************************ */
