@@ -6,10 +6,10 @@ var sumInstructTime = 0 //ms
 var instructTimeThresh = 0 ///in seconds
 
 // number of trails
-practice_len = 5 // was 12
-exp_len = 5 // was 100
+n_practice_trials = 18
+n_test_trials = 150
 attention_per_test_trials = 15
-attention_len = Math.floor(exp_len / attention_per_test_trials)
+attention_len = Math.floor(n_test_trials / attention_per_test_trials)
 
 // consts
 left_key = 37
@@ -64,34 +64,38 @@ var test_stimuli = [{
     image: `<div class = centerbox><div class = flanker-text>${incongruent_right}</div></div>`,
     data: {
         correct_response: right_key,
-        condition: 'incompatible',
+        condition: 'incongruent',
         trial_id: 'stim'
     }
 }, {
     image: `<div class = centerbox><div class = flanker-text>${incongruent_left}</div>`,
     data: {
         correct_response: left_key,
-        condition: 'incompatible',
+        condition: 'incongruent',
         trial_id: 'stim'
     }
 }, {
     image: `<div class = centerbox><div class = flanker-text>${congruent_right}</div></div>`,
     data: {
         correct_response: right_key,
-        condition: 'compatible',
+        condition: 'congruent',
         trial_id: 'stim'
     }
 }, {
     image: `<div class = centerbox><div class = flanker-text>${congruent_left}</div></div>`,
     data: {
         correct_response: left_key,
-        condition: 'compatible',
+        condition: 'congruent',
         trial_id: 'stim'
     }
 }];
 
-var practice_trials = jsPsych.randomization.repeat(test_stimuli, practice_len / 4, true);
-var test_trials = jsPsych.randomization.repeat(test_stimuli, exp_len / 4, true);
+// congruent to incongruent ratio 1:2
+practice_repetitions = [n_practice_trials / 3, n_practice_trials / 3, n_practice_trials / 6, n_practice_trials / 6]
+test_repetitions = [n_test_trials / 3, n_test_trials / 3, n_test_trials / 6, n_test_trials / 6]
+
+var practice_trials = jsPsych.randomization.repeat(test_stimuli, practice_repetitions, true);
+var test_trials = jsPsych.randomization.repeat(test_stimuli, test_repetitions, true);
 
 var practice_response_array = [];
 for (i = 0; i < practice_trials.data.length; i++) {
@@ -231,7 +235,7 @@ var fixation_block = {
 flanker_experiment = []
 flanker_experiment.push(instructions_block);
 
-for (i = 0; i < practice_len; i++) {
+for (i = 0; i < n_practice_trials; i++) {
     flanker_experiment.push(fixation_block)
     var practice_block = {
         type: 'poldrack-categorize',
@@ -259,7 +263,7 @@ for (i = 0; i < practice_len; i++) {
 flanker_experiment.push(start_test_block)
 
 /* define test block */
-for (i = 0; i < exp_len; i++) {
+for (i = 0; i < n_test_trials; i++) {
     /* add attention checks: */
     // if (i > 0 && i % attention_per_test_trials === 0) {
     //     flanker_experiment.push(fixation_block)
