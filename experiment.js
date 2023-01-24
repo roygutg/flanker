@@ -6,8 +6,8 @@ var sumInstructTime = 0 //ms
 var instructTimeThresh = 0 ///in seconds
 
 // number of trails
-n_practice_trials = 12
-n_test_trials = 150
+n_practice_trials = 1
+n_test_trials = 1
 attention_per_test_trials = 15
 attention_len = Math.floor(n_test_trials / attention_per_test_trials)
 
@@ -219,7 +219,7 @@ var start_test_block = {
 
 var fixation_block = {
     type: 'poldrack-single-stim',
-    stimulus: '<div class = centerbox><div class = fixation>+</div></div>',
+    stimulus: `<div class = centerbox><div class = fixation>+</div></div>`,
     is_html: true,
     data: {
         trial_id: "fixation"

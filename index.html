@@ -40,43 +40,45 @@
             on_finish: function (data) {
                 const prolificID = jsPsych.data.getURLVariable('PROLIFIC_PID');
                 jsPsych.data.addProperties({
-                    subject_id: prolificID
+                    "subject_id": prolificID,
+                    "bucket": "cfg-flanker-experiment-2023"
                 });
 
                 // Serialize the data
                 var promise = new Promise(function (resolve, reject) {
                     var data = jsPsych.data.dataAsJSON();
-                    resolve(data);
+                    var url = `https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm?PROLIFIC_PID=${prolificID}`;
+                    resolve(data, url);
                 })
 
-                promise.then(function (data) {
-                    /* For testing, always save locally: */
-                    jsPsych.data.localSave('flanker_results.csv', 'csv');
+                promise.then(function (data, redirectURL) {
+                    $.ajax({
+                        type: "POST",
+                        url: 'https://hss74dd1ed.execute-api.us-east-1.amazonaws.com/',
+                        data: {"body": data},
+                        headers: {
+                            'Access-Control-Allow-Credentials': true,
+                            'Content-Type': 'application/json'
+                        },
+                        crossDomain: true,
+                        dataType: "jsonp",
+                        success: function () {
+                            window.location.replace(redirectURL);
+                        },
 
-                    /* Original code, basis for saving to web server: */
-                    // $.ajax({
-                    //     type: "POST",
-                    //     url: '/save',
-                    //     data: {"data": data},
-                    //     success: function () {
-                    //         document.location = "/next"
-                    //     },
-                    //     dataType: "application/json",
-                    //
-                    //     // Endpoint not running, local save
-                    //     error: function (err) {
-                    //
-                    //         if (err.status == 200) {
-                    //             document.location = "/next";
-                    //         } else {
-                    //             // If error, assume local save
-                    //             jsPsych.data.localSave('flanker_results.csv', 'csv');
-                    //         }
-                    //     }
-                    // });
+                        // Endpoint not running, local save
+                        error: function (err) {
+                            if (err.status == 200) { // this "error" means "OK"
+                                window.location.replace(redirectURL);
+                            } else {
+                                // If error, assume local save
+                                console.log(err.status);
+                                jsPsych.data.localSave('flanker_results.csv', 'csv');
+                            }
+                        }
+                    });
                 })
 
-                window.location.replace(`https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm?PROLIFIC_PID=${prolificID}`);
             }
 
         });
