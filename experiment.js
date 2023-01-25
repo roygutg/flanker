@@ -6,8 +6,8 @@ var sumInstructTime = 0 //ms
 var instructTimeThresh = 0 ///in seconds
 
 // number of trails
-n_practice_trials = 1
-n_test_trials = 1
+n_practice_trials = 12
+n_test_trials = 150
 attention_per_test_trials = 15
 attention_len = Math.floor(n_test_trials / attention_per_test_trials)
 
