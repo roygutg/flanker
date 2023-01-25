@@ -91,8 +91,8 @@ var test_stimuli = [{
 }];
 
 // congruent to incongruent ratio 1:2
-practice_repetitions = [n_practice_trials / 3, n_practice_trials / 3, n_practice_trials / 6, n_practice_trials / 6]
-test_repetitions = [n_test_trials / 3, n_test_trials / 3, n_test_trials / 6, n_test_trials / 6]
+practice_repetitions = [n_practice_trials / 6, n_practice_trials / 6, n_practice_trials / 3, n_practice_trials / 3]
+test_repetitions = [n_test_trials / 6, n_test_trials / 6, n_test_trials / 3, n_test_trials / 3]
 
 var practice_trials = jsPsych.randomization.repeat(test_stimuli, practice_repetitions, true);
 var test_trials = jsPsych.randomization.repeat(test_stimuli, test_repetitions, true);
