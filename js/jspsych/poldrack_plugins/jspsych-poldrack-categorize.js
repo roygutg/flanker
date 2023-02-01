@@ -74,6 +74,11 @@ jsPsych.plugins["poldrack-categorize"] = (function() {
 
     // create response function
     var after_response = function(info) {
+      // convert letter to unicode
+      if ((/[a-zA-Z]/).test(trial.key_answer)) {
+        trial.key_answer = trial.key_answer.charCodeAt(0);
+      }
+
       // make it case-insensitive:
       if (info.key >= 65 && info.key <= 90) {
         info.key += 32;
