@@ -142,13 +142,15 @@ var instructions_block = {
          <p class = block-text style="text-align: center;">press the <span style="color:darkgreen"><b>left arrow key</b></span> if it's <span style="color:darkgreen"><b><</b></span> <br>
          press the <span style="color:darkblue"><b>right arrow key</b></span> if it's <span style="color:darkblue"><b>></b></span></p>
          <p class = block-text><u>Example:</u> If you see ${incongruent_right}, press the right arrow key.</p>
+         <p class = block-text>We will start with a short practice round.<br>When you're ready, click "End Instructions" below.</p>
          </div>`,
 
-        `<div class = centerbox>
-         <p class = block-title>Instructions</p>
-         <p class = block-text>Do your best to stay focused. Too many wrong responses will disqualify you from payment.</p>
-         <p class = block-text>We will start with a short practice round. When you're ready, click "End Instructions" below.</p>
-         </div>`
+        /* if preventing payment based on performance, add this page and remove the last line from the previous one */
+        // `<div class = centerbox>
+        //  <p class = block-title>Instructions</p>
+        //  <p class = block-text>Do your best to stay focused. Too many wrong responses will disqualify you from payment.</p>
+        //  <p class = block-text>We will start with a short practice round. When you're ready, click "End Instructions" below.</p>
+        //  </div>`
     ],
     allow_keys: false,
     data: {
